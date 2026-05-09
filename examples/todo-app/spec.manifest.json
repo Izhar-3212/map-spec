@@ -1,0 +1,21 @@
+{
+  "mapSpec": "1.0.0",
+  "projectId": "proj-example-001",
+  "projectName": "Offline-First Todo App",
+  "specVersion": "1.0.0",
+  "createdAt": "2026-05-09T10:00:00Z",
+  "updatedAt": "2026-05-09T10:00:00Z",
+  "status": "draft",
+  "approvedBy": null,
+  "approvedAt": null,
+  "phase3Unlocked": false,
+  "layers": {
+    "meta":       { "file": "meta.spec.yaml",       "status": "complete" },
+    "functional": { "file": "functional.spec.yaml", "status": "complete" },
+    "api":        { "file": "api.spec.yaml",        "status": "complete" },
+    "data":       { "file": "data.spec.yaml",       "status": "complete" },
+    "ui":         { "file": "ui.spec.yaml",         "status": "complete" },
+    "rules":      { "file": "rules.spec.yaml",      "status": "complete" },
+    "quality":    { "file": "quality.spec.yaml",    "status": "complete" }
+  }
+}
