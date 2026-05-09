@@ -1187,7 +1187,7 @@
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
     // ── Waitlist ──
-    function handleWaitlist() {
+    async function handleWaitlist() {
       const email = document.getElementById('emailInput').value.trim();
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -1199,14 +1199,33 @@
         return;
       }
 
-      // Store in localStorage as fallback
-      const waitlist = JSON.parse(localStorage.getItem('mapspec_waitlist') || '[]');
-      waitlist.push({ email, timestamp: new Date().toISOString() });
-      localStorage.setItem('mapspec_waitlist', JSON.stringify(waitlist));
+      // Disable button while submitting
+      const btn = document.querySelector('.waitlist-btn');
+      btn.textContent = 'Sending...';
+      btn.disabled = true;
 
-      // Show success
-      document.getElementById('waitlistForm').style.display = 'none';
-      document.getElementById('waitlistSuccess').style.display = 'block';
+      try {
+        const response = await fetch('https://formspree.io/f/mlgzpygr', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email,
+            source: 'mapspec.io waitlist',
+            timestamp: new Date().toISOString()
+          }),
+        });
+
+        if (response.ok) {
+          document.getElementById('waitlistForm').style.display = 'none';
+          document.getElementById('waitlistSuccess').style.display = 'block';
+        } else {
+          throw new Error('Submission failed');
+        }
+      } catch {
+        btn.textContent = 'Get Early Access';
+        btn.disabled = false;
+        alert('Something went wrong. Please try again.');
+      }
     }
 
     // Allow Enter key on email input
