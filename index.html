@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MAP Spec — Stop Prompting. Start Specifying.</title>
+  <meta name="description" content="The open industry standard that transforms random AI prompting and unpredictable code generation into structured, precise, and universally acceptable software specifications." />
+  <meta property="og:title" content="MAP Spec — Stop Prompting. Start Specifying." />
+  <meta property="og:description" content="The open standard for AI-ready software specifications." />
+  <meta property="og:url" content="https://mapspec.io" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── Reset & Tokens ──────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:          #080A0F;
+      --bg-2:        #0D1017;
+      --surface:     #13171F;
+      --surface-2:   #1A1F2A;
+      --border:      #1E2430;
+      --border-2:    #262D3D;
+      --amber:       #F5A623;
+      --amber-dim:   #C4831A;
+      --amber-glow:  rgba(245,166,35,0.12);
+      --cyan:        #4ECDC4;
+      --cyan-dim:    rgba(78,205,196,0.15);
+      --text-1:      #F0F2F5;
+      --text-2:      #8B92A5;
+      --text-3:      #4A5268;
+      --font-display: 'Syne', sans-serif;
+      --font-mono:    'JetBrains Mono', monospace;
+      --font-body:    'Inter', sans-serif;
+      --radius:       10px;
+      --radius-lg:    16px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text-1);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ── Grid Noise Background ───────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(245,166,35,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(245,166,35,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Nav ─────────────────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      height: 64px;
+      background: rgba(8,10,15,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .nav-logo-mark {
+      width: 32px;
+      height: 32px;
+      background: var(--amber);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 14px;
+      color: #000;
+      letter-spacing: -0.5px;
+    }
+
+    .nav-logo-text {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--text-1);
+      letter-spacing: -0.3px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-2);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--text-1); }
+
+    .nav-cta {
+      background: var(--amber);
+      color: #000 !important;
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-weight: 600 !important;
+      font-size: 13px !important;
+      transition: background 0.2s, transform 0.1s !important;
+    }
+
+    .nav-cta:hover {
+      background: #FFB83D !important;
+      transform: translateY(-1px);
+    }
+
+    /* ── Hero ────────────────────────────────────────────────── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 24px 80px;
+      z-index: 1;
+    }
+
+    .hero-glow {
+      position: absolute;
+      top: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 700px;
+      height: 400px;
+      background: radial-gradient(ellipse, rgba(245,166,35,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--amber-glow);
+      border: 1px solid rgba(245,166,35,0.25);
+      border-radius: 100px;
+      padding: 6px 16px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--amber);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 32px;
+      animation: fadeSlideUp 0.6s ease both;
+    }
+
+    .hero-badge-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--amber);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(48px, 8vw, 88px);
+      font-weight: 800;
+      line-height: 1.0;
+      letter-spacing: -3px;
+      margin-bottom: 8px;
+      animation: fadeSlideUp 0.6s 0.1s ease both;
+    }
+
+    .hero-title-accent {
+      color: var(--amber);
+      position: relative;
+    }
+
+    .hero-title-line2 {
+      font-family: var(--font-display);
+      font-size: clamp(48px, 8vw, 88px);
+      font-weight: 800;
+      line-height: 1.0;
+      letter-spacing: -3px;
+      color: var(--text-2);
+      margin-bottom: 32px;
+      animation: fadeSlideUp 0.6s 0.15s ease both;
+    }
+
+    .hero-sub {
+      font-size: clamp(16px, 2vw, 20px);
+      color: var(--text-2);
+      max-width: 580px;
+      line-height: 1.7;
+      margin-bottom: 48px;
+      font-weight: 300;
+      animation: fadeSlideUp 0.6s 0.2s ease both;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+      animation: fadeSlideUp 0.6s 0.3s ease both;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--amber);
+      color: #000;
+      padding: 14px 28px;
+      border-radius: var(--radius);
+      font-weight: 700;
+      font-size: 15px;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 0 0 0 rgba(245,166,35,0.4);
+    }
+
+    .btn-primary:hover {
+      background: #FFB83D;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(245,166,35,0.25);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      color: var(--text-1);
+      padding: 14px 28px;
+      border-radius: var(--radius);
+      font-weight: 500;
+      font-size: 15px;
+      text-decoration: none;
+      border: 1px solid var(--border-2);
+      transition: border-color 0.2s, background 0.2s, transform 0.15s;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--text-3);
+      background: var(--surface);
+      transform: translateY(-2px);
+    }
+
+    /* ── Hero Code Preview ───────────────────────────────────── */
+    .hero-code {
+      margin-top: 72px;
+      width: 100%;
+      max-width: 780px;
+      animation: fadeSlideUp 0.7s 0.4s ease both;
+    }
+
+    .code-window {
+      background: var(--surface);
+      border: 1px solid var(--border-2);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      text-align: left;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.5);
+    }
+
+    .code-titlebar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface-2);
+    }
+
+    .code-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .code-dot-red   { background: #FF5F57; }
+    .code-dot-yellow{ background: #FEBC2E; }
+    .code-dot-green { background: #28C840; }
+
+    .code-filename {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-3);
+      margin-left: 8px;
+    }
+
+    .code-body {
+      padding: 24px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 1.8;
+      overflow-x: auto;
+    }
+
+    .code-comment { color: #4A5268; }
+    .code-key     { color: #4ECDC4; }
+    .code-value   { color: #F5A623; }
+    .code-string  { color: #A8D8A8; }
+    .code-tag     { color: #FF8FA3; }
+
+    /* ── Section Base ────────────────────────────────────────── */
+    section {
+      position: relative;
+      z-index: 1;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(32px, 5vw, 52px);
+      font-weight: 800;
+      letter-spacing: -1.5px;
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+
+    .section-sub {
+      font-size: 18px;
+      color: var(--text-2);
+      max-width: 560px;
+      line-height: 1.7;
+      font-weight: 300;
+    }
+
+    /* ── Problem Section ─────────────────────────────────────── */
+    .problem {
+      padding: 120px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .problem-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+      margin-top: 64px;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .problem-side {
+      padding: 40px;
+      background: var(--surface);
+    }
+
+    .problem-side-bad {
+      border-right: 1px solid var(--border);
+    }
+
+    .problem-side-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .label-bad  { color: #FF6B6B; }
+    .label-good { color: #4ECDC4; }
+
+    .problem-prompt {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--text-2);
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+
+    .problem-output {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .output-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--text-2);
+    }
+
+    .output-icon { font-size: 16px; }
+
+    /* ── Layers Section ──────────────────────────────────────── */
+    .layers {
+      padding: 120px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .layers-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 1px;
+      margin-top: 64px;
+      background: var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .layer-card {
+      background: var(--surface);
+      padding: 28px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      cursor: default;
+      transition: background 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .layer-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--amber);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+      transform-origin: left;
+    }
+
+    .layer-card:hover::before { transform: scaleX(1); }
+    .layer-card:hover { background: var(--surface-2); }
+
+    .layer-num {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-3);
+      font-weight: 500;
+    }
+
+    .layer-icon {
+      font-size: 24px;
+      line-height: 1;
+    }
+
+    .layer-name {
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-1);
+      letter-spacing: -0.2px;
+    }
+
+    .layer-file {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--amber);
+      background: var(--amber-glow);
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+
+    .layer-desc {
+      font-size: 12px;
+      color: var(--text-2);
+      line-height: 1.5;
+    }
+
+    /* ── How It Works ────────────────────────────────────────── */
+    .how {
+      padding: 120px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .how-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      margin-top: 64px;
+      position: relative;
+    }
+
+    .how-step {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 40px 32px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s, transform 0.2s;
+    }
+
+    .how-step:hover {
+      border-color: var(--border-2);
+      transform: translateY(-4px);
+    }
+
+    .how-step-num {
+      font-family: var(--font-mono);
+      font-size: 64px;
+      font-weight: 700;
+      color: var(--border-2);
+      line-height: 1;
+      margin-bottom: 24px;
+      display: block;
+    }
+
+    .how-step-title {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+
+    .how-step-desc {
+      font-size: 15px;
+      color: var(--text-2);
+      line-height: 1.7;
+    }
+
+    .how-step-tag {
+      display: inline-block;
+      margin-top: 20px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--amber);
+      background: var(--amber-glow);
+      border: 1px solid rgba(245,166,35,0.2);
+      padding: 4px 10px;
+      border-radius: 6px;
+    }
+
+    /* ── Waitlist Section ────────────────────────────────────── */
+    .waitlist {
+      padding: 120px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .waitlist-box {
+      background: var(--surface);
+      border: 1px solid var(--border-2);
+      border-radius: var(--radius-lg);
+      padding: 64px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .waitlist-box::before {
+      content: '';
+      position: absolute;
+      top: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 500px;
+      height: 300px;
+      background: radial-gradient(ellipse, rgba(245,166,35,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .waitlist-title {
+      font-family: var(--font-display);
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 800;
+      letter-spacing: -1.5px;
+      margin-bottom: 16px;
+    }
+
+    .waitlist-sub {
+      font-size: 17px;
+      color: var(--text-2);
+      margin-bottom: 40px;
+      font-weight: 300;
+    }
+
+    .waitlist-form {
+      display: flex;
+      gap: 12px;
+      max-width: 480px;
+      margin: 0 auto 20px;
+    }
+
+    .waitlist-input {
+      flex: 1;
+      background: var(--bg);
+      border: 1px solid var(--border-2);
+      border-radius: var(--radius);
+      padding: 14px 20px;
+      font-size: 15px;
+      color: var(--text-1);
+      font-family: var(--font-body);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .waitlist-input::placeholder { color: var(--text-3); }
+    .waitlist-input:focus { border-color: var(--amber); }
+
+    .waitlist-btn {
+      background: var(--amber);
+      color: #000;
+      border: none;
+      border-radius: var(--radius);
+      padding: 14px 24px;
+      font-size: 15px;
+      font-weight: 700;
+      font-family: var(--font-body);
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+      white-space: nowrap;
+    }
+
+    .waitlist-btn:hover {
+      background: #FFB83D;
+      transform: translateY(-1px);
+    }
+
+    .waitlist-note {
+      font-size: 13px;
+      color: var(--text-3);
+    }
+
+    .waitlist-success {
+      display: none;
+      background: rgba(78,205,196,0.1);
+      border: 1px solid rgba(78,205,196,0.25);
+      border-radius: var(--radius);
+      padding: 16px 24px;
+      color: var(--cyan);
+      font-size: 15px;
+      font-weight: 500;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    .waitlist-counter {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 32px;
+      font-size: 14px;
+      color: var(--text-2);
+    }
+
+    .counter-avatars {
+      display: flex;
+    }
+
+    .counter-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid var(--surface);
+      margin-left: -8px;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .counter-avatar:first-child { margin-left: 0; }
+
+    /* ── Standard Section ────────────────────────────────────── */
+    .standard {
+      padding: 120px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .standard-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 64px;
+    }
+
+    .standard-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .standard-card:hover {
+      border-color: var(--border-2);
+      transform: translateY(-3px);
+    }
+
+    .standard-icon {
+      font-size: 28px;
+      margin-bottom: 16px;
+    }
+
+    .standard-card-title {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      margin-bottom: 10px;
+    }
+
+    .standard-card-desc {
+      font-size: 14px;
+      color: var(--text-2);
+      line-height: 1.7;
+    }
+
+    /* ── Footer ──────────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 48px 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 24px;
+    }
+
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .footer-logo-mark {
+      width: 28px;
+      height: 28px;
+      background: var(--amber);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 12px;
+      color: #000;
+    }
+
+    .footer-text {
+      font-size: 13px;
+      color: var(--text-3);
+    }
+
+    .footer-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .footer-links a {
+      color: var(--text-3);
+      text-decoration: none;
+      font-size: 13px;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--text-2); }
+
+    /* ── Animations ──────────────────────────────────────────── */
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── Responsive ──────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      nav { padding: 0 20px; }
+      .nav-links { display: none; }
+      .problem-grid { grid-template-columns: 1fr; }
+      .problem-side-bad { border-right: none; border-bottom: 1px solid var(--border); }
+      .layers-grid { grid-template-columns: repeat(2, 1fr); }
+      .how-steps { grid-template-columns: 1fr; gap: 16px; }
+      .standard-grid { grid-template-columns: 1fr 1fr; }
+      .waitlist-box { padding: 40px 24px; }
+      .waitlist-form { flex-direction: column; }
+      .footer-inner { flex-direction: column; align-items: flex-start; }
+    }
+
+    @media (max-width: 600px) {
+      .layers-grid { grid-template-columns: 1fr; }
+      .standard-grid { grid-template-columns: 1fr; }
+      .hero-title, .hero-title-line2 { letter-spacing: -2px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Nav ── -->
+  <nav>
+    <a href="#" class="nav-logo">
+      <div class="nav-logo-mark">M</div>
+      <span class="nav-logo-text">MAP Spec</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#layers">The Standard</a></li>
+      <li><a href="#how">How It Works</a></li>
+      <li><a href="https://github.com/Izhar-3212/map-spec" target="_blank">GitHub</a></li>
+      <li><a href="https://github.com/Izhar-3212/MyAgenticPlatform" target="_blank" class="nav-cta">Try Free →</a></li>
+    </ul>
+  </nav>
+
+  <!-- ── Hero ── -->
+  <section class="hero">
+    <div class="hero-glow"></div>
+
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      v0.1.0 Draft — Open Standard
+    </div>
+
+    <h1 class="hero-title">Stop <span class="hero-title-accent">Prompting.</span></h1>
+    <p class="hero-title-line2">Start Specifying.</p>
+
+    <p class="hero-sub">
+      The open industry standard that transforms random AI prompting 
+      and unpredictable code generation into structured, precise, 
+      and universally acceptable software specifications.
+    </p>
+
+    <div class="hero-actions">
+      <a href="https://github.com/Izhar-3212/MyAgenticPlatform" target="_blank" class="btn-primary">
+        Try MyAgenticPlatform →
+      </a>
+      <a href="https://github.com/Izhar-3212/map-spec" target="_blank" class="btn-secondary">
+        ⭐ Star on GitHub
+      </a>
+    </div>
+
+    <div class="hero-code">
+      <div class="code-window">
+        <div class="code-titlebar">
+          <div class="code-dot code-dot-red"></div>
+          <div class="code-dot code-dot-yellow"></div>
+          <div class="code-dot code-dot-green"></div>
+          <span class="code-filename">rules.spec.yaml — MAP Spec v1.0.0</span>
+        </div>
+        <div class="code-body">
+<pre><span class="code-key">map-spec</span>: <span class="code-string">"1.0.0"</span>
+<span class="code-key">layer</span>: <span class="code-string">"rules"</span>
+
+<span class="code-key">rules</span>:
+  - <span class="code-key">id</span>: <span class="code-string">"RULE-001"</span>
+    <span class="code-key">domain</span>: <span class="code-string">"security"</span>
+    <span class="code-key">name</span>: <span class="code-string">"Password hashing"</span>
+    <span class="code-key">rule</span>: <span class="code-string">"All passwords must be hashed before storage"</span>
+    <span class="code-key">implementation</span>: <span class="code-string">"bcrypt with cost factor 12"</span>
+    <span class="code-key">severity</span>: <span class="code-value">"critical"</span>
+    <span class="code-key">aiInstruction</span>: <span class="code-string">"Always call bcrypt.hash(password, 12) before</span>
+<span class="code-string">                   any INSERT to users table. Never log passwords."</span>
+    <span class="code-key">references</span>: [<span class="code-string">"US-001"</span>, <span class="code-string">"API-001"</span>]
+
+  - <span class="code-key">id</span>: <span class="code-string">"RULE-002"</span>
+    <span class="code-key">domain</span>: <span class="code-string">"data"</span>
+    <span class="code-key">name</span>: <span class="code-string">"Soft delete only"</span>
+    <span class="code-key">rule</span>: <span class="code-string">"User records must never be hard deleted"</span>
+    <span class="code-key">severity</span>: <span class="code-value">"critical"</span>
+    <span class="code-key">aiInstruction</span>: <span class="code-string">"Never generate DELETE FROM users. Always use</span>
+<span class="code-string">                   UPDATE users SET deleted_at = NOW()"</span></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Problem ── -->
+  <section class="problem" id="problem">
+    <div class="container">
+      <div class="reveal">
+        <p class="section-label">The Problem</p>
+        <h2 class="section-title">AI guesses.<br/>MAP Spec doesn't.</h2>
+        <p class="section-sub">Give AI a vague prompt and it makes hundreds of micro-decisions — choosing databases, inventing business rules, designing APIs — all without knowing what you actually want.</p>
+      </div>
+
+      <div class="problem-grid reveal">
+        <div class="problem-side problem-side-bad">
+          <p class="problem-side-label label-bad">❌ Without MAP Spec</p>
+          <div class="problem-prompt">"Build me a todo app with user auth and offline support"</div>
+          <div class="problem-output">
+            <div class="output-item"><span class="output-icon">🎲</span> AI picks MySQL (you wanted PostgreSQL)</div>
+            <div class="output-item"><span class="output-icon">🎲</span> AI uses MD5 for passwords (critical bug)</div>
+            <div class="output-item"><span class="output-icon">🎲</span> AI hard-deletes user data (compliance violation)</div>
+            <div class="output-item"><span class="output-icon">🎲</span> AI invents 3 tables you didn't ask for</div>
+            <div class="output-item"><span class="output-icon">🎲</span> Offline sync logic is wrong</div>
+            <div class="output-item"><span class="output-icon">🎲</span> Every run produces different output</div>
+          </div>
+        </div>
+        <div class="problem-side">
+          <p class="problem-side-label label-good">✓ With MAP Spec</p>
+          <div class="problem-prompt">RULE-001: bcrypt cost=12, never log passwords [critical]<br/>RULE-004: Soft delete only, deleted_at timestamp [critical]<br/>data.spec.yaml: 3 exact tables, typed columns, indexes<br/>api.spec.yaml: 8 endpoints with exact request/response</div>
+          <div class="problem-output">
+            <div class="output-item"><span class="output-icon">✅</span> AI uses exactly what you specified</div>
+            <div class="output-item"><span class="output-icon">✅</span> Security rules enforced — no exceptions</div>
+            <div class="output-item"><span class="output-icon">✅</span> Data integrity guaranteed by spec</div>
+            <div class="output-item"><span class="output-icon">✅</span> Zero invented tables or endpoints</div>
+            <div class="output-item"><span class="output-icon">✅</span> Offline sync matches business rules</div>
+            <div class="output-item"><span class="output-icon">✅</span> Reproducible output every time</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Layers ── -->
+  <section class="layers" id="layers">
+    <div class="container">
+      <div class="reveal">
+        <p class="section-label">The Standard</p>
+        <h2 class="section-title">7 layers.<br/>Zero ambiguity.</h2>
+        <p class="section-sub">Every MAP Spec project contains 7 layers. Together they form a complete, unambiguous contract that AI systems consume to generate accurate, predictable output.</p>
+      </div>
+
+      <div class="layers-grid reveal">
+        <div class="layer-card">
+          <span class="layer-num">01</span>
+          <span class="layer-icon">🧬</span>
+          <p class="layer-name">Meta</p>
+          <span class="layer-file">meta.spec.yaml</span>
+          <p class="layer-desc">Project identity, technology stack declaration, constraints</p>
+        </div>
+        <div class="layer-card">
+          <span class="layer-num">02</span>
+          <span class="layer-icon">📋</span>
+          <p class="layer-name">Functional</p>
+          <span class="layer-file">functional.spec.yaml</span>
+          <p class="layer-desc">Features, user stories, Given/When/Then acceptance criteria</p>
+        </div>
+        <div class="layer-card">
+          <span class="layer-num">03</span>
+          <span class="layer-icon">🔌</span>
+          <p class="layer-name">API</p>
+          <span class="layer-file">api.spec.yaml</span>
+          <p class="layer-desc">Every endpoint, request/response contract, side effects</p>
+        </div>
+        <div class="layer-card">
+          <span class="layer-num">04</span>
+          <span class="layer-icon">🗄️</span>
+          <p class="layer-name">Data</p>
+          <span class="layer-file">data.spec.yaml</span>
+          <p class="layer-desc">Exact database schema, tables, columns, indexes, relations</p>
+        </div>
+        <div class="layer-card">
+          <span class="layer-num">05</span>
+          <span class="layer-icon">🎨</span>
+          <p class="layer-name">UI</p>
+          <span class="layer-file">ui.spec.yaml</span>
+          <p class="layer-desc">Every component, props, state, interactions, routing</p>
+        </div>
+        <div class="layer-card">
+          <span class="layer-num">06</span>
+          <span class="layer-icon">⚖️</span>
+          <p class="layer-name">Rules</p>
+          <span class="layer-file">rules.spec.yaml</span>
+          <p class="layer-desc">Business logic guardrails AI must never violate</p>
+        </div>
+        <div class="layer-card">
+          <span class="layer-num">07</span>
+          <span class="layer-icon">🧪</span>
+          <p class="layer-name">Quality</p>
+          <span class="layer-file">quality.spec.yaml</span>
+          <p class="layer-desc">Test suites, coverage requirements, performance targets</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── How It Works ── -->
+  <section class="how" id="how">
+    <div class="container">
+      <div class="reveal">
+        <p class="section-label">How It Works</p>
+        <h2 class="section-title">Brief to spec<br/>in minutes.</h2>
+        <p class="section-sub">MyAgenticPlatform is the reference implementation — the fastest and most accurate MAP Spec generator in existence.</p>
+      </div>
+
+      <div class="how-steps reveal">
+        <div class="how-step">
+          <span class="how-step-num">01</span>
+          <h3 class="how-step-title">Describe your product</h3>
+          <p class="how-step-desc">Write a brief in plain English. What you're building, who it's for, what it needs to do. No technical knowledge required.</p>
+          <span class="how-step-tag">Phase 1 — Artifacts</span>
+        </div>
+        <div class="how-step">
+          <span class="how-step-num">02</span>
+          <h3 class="how-step-title">Generate MAP Specs</h3>
+          <p class="how-step-desc">7 specialised agents convert your artifacts into a complete MAP Spec package — all 7 layers, YAML format, AI-ready.</p>
+          <span class="how-step-tag">Phase 2 — MAP Specs</span>
+        </div>
+        <div class="how-step">
+          <span class="how-step-num">03</span>
+          <h3 class="how-step-title">Generate accurate code</h3>
+          <p class="how-step-desc">AI code generators consume your MAP Spec and produce code that matches exactly what you specified. No drift. No surprises.</p>
+          <span class="how-step-tag">Phase 3 — Code</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Why Open Standard ── -->
+  <section class="standard" id="standard">
+    <div class="container">
+      <div class="reveal">
+        <p class="section-label">Why Open</p>
+        <h2 class="section-title">The standard is free.<br/>The generator is best.</h2>
+        <p class="section-sub">MAP Spec is MIT licensed. Anyone can read it, implement it, build tools around it. We make money by being the best at generating it.</p>
+      </div>
+
+      <div class="standard-grid reveal">
+        <div class="standard-card">
+          <div class="standard-icon">🌐</div>
+          <h3 class="standard-card-title">Open Standard</h3>
+          <p class="standard-card-desc">MIT licensed. Read it, implement it, build tools around it. No vendor lock-in. The spec belongs to everyone.</p>
+        </div>
+        <div class="standard-card">
+          <div class="standard-icon">🤖</div>
+          <h3 class="standard-card-title">AI-Optimised</h3>
+          <p class="standard-card-desc">Written so AI models parse with zero ambiguity. Every field serves a purpose. The aiInstruction field is mandatory.</p>
+        </div>
+        <div class="standard-card">
+          <div class="standard-icon">📐</div>
+          <h3 class="standard-card-title">Stack-Aware</h3>
+          <p class="standard-card-desc">Declare your stack in meta.spec.yaml. All 7 layers adapt — no generic advice, no technology drift.</p>
+        </div>
+        <div class="standard-card">
+          <div class="standard-icon">✅</div>
+          <h3 class="standard-card-title">Validatable</h3>
+          <p class="standard-card-desc">Every MAP Spec project can be checked for completeness and consistency before a single line of code is written.</p>
+        </div>
+        <div class="standard-card">
+          <div class="standard-icon">🔄</div>
+          <h3 class="standard-card-title">Versioned</h3>
+          <p class="standard-card-desc">map-spec: "1.0.0" in every file. Specs evolve formally. Full change history. Breaking changes are major versions.</p>
+        </div>
+        <div class="standard-card">
+          <div class="standard-icon">🏗️</div>
+          <h3 class="standard-card-title">Human-Readable</h3>
+          <p class="standard-card-desc">YAML format. Any developer can read and write MAP Spec without tooling. Stakeholders can review and approve.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Waitlist ── -->
+  <section class="waitlist" id="waitlist">
+    <div class="container">
+      <div class="waitlist-box reveal">
+        <div class="waitlist-counter">
+          <div class="counter-avatars">
+            <div class="counter-avatar" style="background:#2D3748">👨‍💻</div>
+            <div class="counter-avatar" style="background:#1A202C">👩‍💼</div>
+            <div class="counter-avatar" style="background:#2D3748">🧑‍🚀</div>
+            <div class="counter-avatar" style="background:#1A202C">👨‍🎨</div>
+          </div>
+          <span>Join early builders already following the standard</span>
+        </div>
+
+        <h2 class="waitlist-title">Get early access to<br/>MyAgenticPlatform</h2>
+        <p class="waitlist-sub">The first MAP Spec generator. Brief in, specs out.<br/>Be first when Phase 3 code generation ships.</p>
+
+        <div class="waitlist-form" id="waitlistForm">
+          <input
+            type="email"
+            class="waitlist-input"
+            id="emailInput"
+            placeholder="your@email.com"
+            autocomplete="email"
+          />
+          <button class="waitlist-btn" onclick="handleWaitlist()">Get Early Access</button>
+        </div>
+
+        <div class="waitlist-success" id="waitlistSuccess">
+          ✓ You're on the list! We'll be in touch when early access opens.
+        </div>
+
+        <p class="waitlist-note">No spam. Unsubscribe any time.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Footer ── -->
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-left">
+          <div class="footer-logo-mark">M</div>
+          <span class="footer-text">MAP Spec v0.1.0 — MIT License — © 2026 MyAgenticPlatform</span>
+        </div>
+        <ul class="footer-links">
+          <li><a href="https://github.com/Izhar-3212/map-spec" target="_blank">GitHub</a></li>
+          <li><a href="https://github.com/Izhar-3212/map-spec/blob/main/docs/STANDARD.md" target="_blank">Standard</a></li>
+          <li><a href="https://github.com/Izhar-3212/map-spec/blob/main/docs/CONTRIBUTING.md" target="_blank">Contribute</a></li>
+          <li><a href="https://github.com/Izhar-3212/MyAgenticPlatform" target="_blank">Platform</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ── Scroll reveal ──
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // ── Waitlist ──
+    function handleWaitlist() {
+      const email = document.getElementById('emailInput').value.trim();
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      if (!emailRegex.test(email)) {
+        document.getElementById('emailInput').style.borderColor = '#FF6B6B';
+        setTimeout(() => {
+          document.getElementById('emailInput').style.borderColor = '';
+        }, 2000);
+        return;
+      }
+
+      // Store in localStorage as fallback
+      const waitlist = JSON.parse(localStorage.getItem('mapspec_waitlist') || '[]');
+      waitlist.push({ email, timestamp: new Date().toISOString() });
+      localStorage.setItem('mapspec_waitlist', JSON.stringify(waitlist));
+
+      // Show success
+      document.getElementById('waitlistForm').style.display = 'none';
+      document.getElementById('waitlistSuccess').style.display = 'block';
+    }
+
+    // Allow Enter key on email input
+    document.getElementById('emailInput').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') handleWaitlist();
+    });
+  </script>
+
+</body>
+</html>
