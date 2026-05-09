@@ -33,6 +33,7 @@ When AI is given a MAP Spec, it has no room to deviate. No assumptions. No drift
 - **Validatable** — every spec can be checked for completeness automatically
 - **Versioned** — specs evolve formally with full change history
 - **Open** — the standard is free; the best generator is MyAgenticPlatform
+- **Atomic** — every spec is the smallest meaningful unit, following the Dumbest Model Standard
 
 ---
 
@@ -119,6 +120,20 @@ map-spec validate ./specs/
 ## Generate MAP Specs Automatically
 
 [MyAgenticPlatform](https://github.com/Izhar3212/MyAgenticPlatform) is the reference implementation — the fastest and most accurate way to generate MAP Spec compliant specifications from your product idea.
+
+---
+
+## Atomic Specs — v1.1.0
+
+MAP Spec v1.1.0 introduces Atomic Specs — the principle that every 
+spec file describes exactly one concern.
+
+> One file. One concern. Zero ambiguity.
+
+Instead of one large `functional.spec.yaml`, you get individual files:
+`FEAT-001-user-registration.yaml`, `FEAT-001-user-login.yaml` etc.
+
+Read the full [Atomic Spec Standard](docs/ATOMIC.md).
 
 ---
 
