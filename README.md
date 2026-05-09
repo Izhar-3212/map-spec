@@ -139,7 +139,8 @@ MAP Spec follows semantic versioning. Current version: **v0.1.0 (draft)**
 | Version | Status | Notes |
 |---------|--------|-------|
 | v0.1.0 | Draft | Initial standard definition |
-| v1.0.0 | Planned | First stable release |
+| v1.0.0 | Planned | First stable release — monolithic specs |
+| v1.1.0 | Planned | Atomic Specs — one file, one concern, zero drift |
 
 ---
 
