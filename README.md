@@ -1,169 +1,203 @@
 # MAP Spec
 
-> **The open industry standard that transforms random AI prompting and unpredictable code generation into structured, precise, and universally acceptable software specifications.**
+> The open standard for AI-ready software specifications.
 
-**Stop prompting. Start specifying.**
+**mapspec.io** · [Standard v1.0.0](docs/STANDARD.md) · [Atomic Specs v1.1.0](docs/ATOMIC.md) · MIT License
 
 ---
 
 ## The Problem
 
-AI code generation is powerful but unpredictable. Give an AI a vague prompt and it makes hundreds of micro-decisions on your behalf — choosing databases, designing APIs, structuring components, inventing business logic — all without knowing what you actually want.
+Give AI a vague prompt and it makes hundreds of silent decisions — wrong database, wrong security approach, invented tables you never asked for. Every run produces different, inconsistent output.
 
-The result drifts from your vision. Every time.
-
-This isn't an AI problem. It's a specification problem.
+**MAP Spec fixes this.** Write the contract once. Ship the same code every time.
 
 ---
 
-## The Solution
+## What is MAP Spec?
 
-MAP Spec (MyAgenticPlatform Specification) is a structured, stack-aware, AI-optimised specification standard that defines **exactly** what software should do, look like, and behave — before a single line of code is written.
+MAP Spec is an open, MIT-licensed YAML standard that defines exactly what an AI model must build — and what it must never do. Every MAP Spec project contains 7 layers:
 
-When AI is given a MAP Spec, it has no room to deviate. No assumptions. No drift. Just accurate, predictable output that matches what was specified.
+| # | Layer | File | What It Defines |
+|---|-------|------|-----------------|
+| 01 | Meta | `meta.spec.yaml` | Project identity, stack declaration, constraints |
+| 02 | Functional | `functional.spec.yaml` | Features, user stories, acceptance criteria + `aiNote` |
+| 03 | API | `api.spec.yaml` | Every endpoint with exact request/response contracts |
+| 04 | Data | `data.spec.yaml` | Complete database schema with native types |
+| 05 | UI | `ui.spec.yaml` | Every component, props, state, interactions |
+| 06 | Rules | `rules.spec.yaml` | Business guardrails with mandatory `aiInstruction` |
+| 07 | Quality | `quality.spec.yaml` | Test suites, coverage requirements, performance targets |
 
----
-
-## Key Principles
-
-- **Structured** — every project follows the same 7-layer format
-- **Stack-aware** — specs adapt to your declared technology choices
-- **AI-optimised** — written so AI models parse with zero ambiguity
-- **Human-readable** — developers can read and write it without tooling
-- **Validatable** — every spec can be checked for completeness automatically
-- **Versioned** — specs evolve formally with full change history
-- **Open** — the standard is free; the best generator is MyAgenticPlatform
-- **Atomic** — every spec is the smallest meaningful unit, following the Dumbest Model Standard
-
----
-
-## The 7 Layers
-
-Every MAP Spec project contains 7 layers, each in its own file:
-
-| Layer | File | Purpose |
-|-------|------|---------|
-| 1. Meta | `meta.spec.yaml` | Project identity, stack declaration, versioning |
-| 2. Functional | `functional.spec.yaml` | Features, user stories, acceptance criteria |
-| 3. API | `api.spec.yaml` | Endpoints, request/response contracts, auth |
-| 4. Data | `data.spec.yaml` | Database schema, tables, relationships, indexes |
-| 5. UI | `ui.spec.yaml` | Components, props, states, behaviours, routing |
-| 6. Rules | `rules.spec.yaml` | Business logic guardrails, constraints, policies |
-| 7. Quality | `quality.spec.yaml` | Test cases, coverage requirements, benchmarks |
-
-Plus one master index:
-
-| File | Purpose |
-|------|---------|
-| `spec.manifest.json` | Master index, approval status, phase gating |
+Together they form a complete, unambiguous contract. If it's not in the spec, AI doesn't build it.
 
 ---
 
 ## Quick Example
 
 ```yaml
-# meta.spec.yaml
-map-spec: "1.0.0"
-project:
-  id: "proj-001"
-  name: "Offline-First Todo App"
-  version: "1.0.0"
-stack:
-  frontend: "Next.js 14"
-  backend: "Node.js + Express"
-  database: "PostgreSQL"
-  auth: "JWT"
-  hosting: "Vercel"
-  styling: "Tailwind CSS"
+# RULE-001-password-hashing.yaml — MAP Spec v1.1.0
+map-spec: "1.1.0"
+layer: "rules"
+atomic: true
+
+unit:
+  id: "RULE-001-password-hashing"
+  severity: "critical"
+
+rule:
+  domain: "security"
+  statement: "All passwords must be hashed with bcrypt before storage"
+  implementation: "bcrypt cost factor 12"
+
+aiInstruction: >
+  Always call bcrypt.hash(password, 12) before any INSERT to users table.
+  Never log the password value at any log level.
+  Never return the password hash in any API response.
+
+violations:
+  - "Storing MD5 or SHA hash instead of bcrypt"
+  - "Using bcrypt with cost factor below 10"
+  - "Logging password values"
 ```
 
-```yaml
-# rules.spec.yaml
-map-spec: "1.0.0"
-rules:
-  - id: "RULE-001"
-    domain: "auth"
-    rule: "Never store plain text passwords"
-    implementation: "bcrypt rounds=12"
-    severity: "critical"
-    aiInstruction: "Always hash passwords before INSERT. Never log password values."
-```
+An AI receiving only this file knows exactly what to implement and exactly what never to do.
 
 ---
 
-## File Structure
+## Versions
 
-```
-my-project/
-└── specs/
-    ├── spec.manifest.json
-    ├── meta.spec.yaml
-    ├── functional.spec.yaml
-    ├── api.spec.yaml
-    ├── data.spec.yaml
-    ├── ui.spec.yaml
-    ├── rules.spec.yaml
-    └── quality.spec.yaml
-```
+| Version | Status | Description |
+|---------|--------|-------------|
+| v1.0.0 | Stable | Monolithic specs — one file per layer |
+| v1.1.0 | Stable | Atomic Specs — one file per concern |
+| v1.2.0 | Planned | Baseline Spec Library |
 
 ---
 
-## Validate Your Specs
+## v1.1.0 — Atomic Specs
 
-```bash
-npm install -g map-spec
-map-spec validate ./specs/
-```
-
----
-
-## Generate MAP Specs Automatically
-
-[MyAgenticPlatform](https://github.com/Izhar3212/MyAgenticPlatform) is the reference implementation — the fastest and most accurate way to generate MAP Spec compliant specifications from your product idea.
-
----
-
-## Atomic Specs — v1.1.0
-
-MAP Spec v1.1.0 introduces Atomic Specs — the principle that every 
-spec file describes exactly one concern.
+MAP Spec v1.1.0 introduces **Atomic Specs** — the smallest meaningful unit of specification.
 
 > One file. One concern. Zero ambiguity.
 
-Instead of one large `functional.spec.yaml`, you get individual files:
-`FEAT-001-user-registration.yaml`, `FEAT-001-user-login.yaml` etc.
+Instead of one large spec file per layer, each atomic unit gets its own file:
 
-Read the full [Atomic Spec Standard](docs/ATOMIC.md).
+```
+specs/
+  meta.spec.yaml                         ← always single file
+
+  functional/
+    FEAT-001-user-registration.yaml      ← just registration
+    FEAT-001-user-login.yaml             ← just login
+    FEAT-002-create-todo.yaml
+
+  api/
+    API-001-POST-auth-register.yaml      ← one endpoint per file
+    API-002-POST-auth-login.yaml
+
+  data/
+    TABLE-users.yaml                     ← one table per file
+    TABLE-todos.yaml
+
+  rules/
+    RULE-001-password-hashing.yaml       ← one rule per file
+    RULE-002-jwt-expiry.yaml
+
+  ui/
+    COMP-001-RegisterForm.yaml           ← one component per file
+
+  quality/
+    SUITE-001-auth-integration.yaml      ← one test suite per file
+```
+
+**The Dumbest Model Standard:** Every atomic spec must be written so that the least capable AI model can implement it correctly without reading any other file.
+
+Read the full [Atomic Specs standard](docs/ATOMIC.md).
+
+---
+
+## AI Consumption Rules
+
+Any AI system consuming a MAP Spec must follow these rules:
+
+1. **Never invent** fields, endpoints, tables, or components not specified
+2. **Never skip** anything that is specified
+3. **Always follow** `aiInstruction` fields on critical rules — no exceptions
+4. **Never assume** anything not stated — halt and request clarification instead
+5. **One atomic file = one implementation unit** — never mix context across files
+
+---
+
+## The Reference Implementation
+
+[MyAgenticPlatform](https://github.com/Izhar3212/MyAgenticPlatform) is the reference implementation — it generates complete MAP Spec packages automatically from a plain English brief.
+
+```
+Brief → Phase 0 (Clarification + Mandate)
+      → Phase 1 (6 AI agents → artifacts)
+      → Phase 2 (7 spec-writers → atomic YAML files)
+      → Implementation Board (Jira-style task board)
+      → Phase 3 (code generation — coming soon)
+```
+
+Try it at [mapspec.io](https://mapspec.io) or run it locally from the [GitHub repo](https://github.com/Izhar3212/MyAgenticPlatform).
+
+---
+
+## Repository Structure
+
+```
+map-spec/
+├── docs/
+│   ├── STANDARD.md        — v1.0.0 full standard (7 layers, monolithic)
+│   ├── ATOMIC.md          — v1.1.0 Atomic Specs standard
+│   └── CONTRIBUTING.md    — How to contribute
+├── examples/
+│   └── todo-app/          — Example MAP Spec project
+│       └── spec.manifest.json
+├── README.md
+└── LICENSE                — MIT
+```
+
+---
+
+## Documentation
+
+- [The MAP Spec v1.0.0 Standard](docs/STANDARD.md) — complete layer definitions, field reference, validation rules
+- [Atomic Specs v1.1.0](docs/ATOMIC.md) — atomic spec principle, decomposition rules, file schema
+- [Contributing Guide](docs/CONTRIBUTING.md) — how to propose changes and submit examples
 
 ---
 
 ## Contributing
 
-MAP Spec is open. Contributions, proposals, and discussions welcome.
+MAP Spec is an open standard. Contributions welcome:
 
-- Read the [Contributing Guide](./docs/CONTRIBUTING.md)
-- Open a [Discussion](https://github.com/Izhar-3212/map-spec/discussions)
-- Propose changes via [Pull Request](https://github.com/Izhar-3212/map-spec/pulls)
+- **Propose changes** — open an issue describing the problem and proposed solution
+- **Submit examples** — add real MAP Spec projects to `examples/`
+- **Build tools** — validators, generators, IDE plugins — link them in issues
+- **Improve docs** — clarity fixes, better examples, new layer documentation
+
+See [CONTRIBUTING.md](docs/CONTRIBUTING.md) for guidelines.
 
 ---
 
-## Versioning
+## Why Open?
 
-MAP Spec follows semantic versioning. Current version: **v0.1.0 (draft)**
+The MAP Spec standard is MIT licensed because standards only work when everyone can use them freely. We make money by building the best MAP Spec generator — not by owning the format.
 
-| Version | Status | Notes |
-|---------|--------|-------|
-| v0.1.0 | Draft | Initial standard definition |
-| v1.0.0 | Planned | First stable release — monolithic specs |
-| v1.1.0 | Planned | Atomic Specs — one file, one concern, zero drift |
+An open standard means:
+- Anyone can implement MAP Spec in any tool
+- No vendor lock-in — your specs are portable YAML files
+- Community improvements benefit everyone
+- AI tooling can adopt MAP Spec without licensing friction
 
 ---
 
 ## License
 
-The MAP Spec standard is released under the [MIT License](./LICENSE) — free to use, implement, and build upon.
+MIT — see [LICENSE](LICENSE)
 
 ---
 
-*MAP Spec is created and maintained by [MyAgenticPlatform](https://github.com/Izhar3212/MyAgenticPlatform)*
-
+*Standard maintained by [MyAgenticPlatform](https://mapspec.io) · Reference implementation at [github.com/Izhar3212/MyAgenticPlatform](https://github.com/Izhar3212/MyAgenticPlatform)*
