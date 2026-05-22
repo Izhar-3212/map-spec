@@ -272,6 +272,51 @@ footer{border-top:1px solid var(--border);padding:48px 0;position:relative;z-ind
   .wl-box{padding:36px 24px}
   .wl-form{flex-direction:column}
 }
+
+/* ── DEMO SECTION ──────────────────────── */
+.demo-shell{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
+@media(max-width:768px){.demo-shell{grid-template-columns:1fr}}
+.demo-step{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px;opacity:.4;transition:opacity .3s}
+.demo-step.active{opacity:1}
+.demo-step.done{opacity:1;border-color:rgba(245,166,35,.3)}
+.demo-step-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.demo-step-num{font-size:11px;font-weight:700;color:#F5A623;font-family:var(--font-mono);letter-spacing:.05em}
+.demo-step-title{font-size:13px;font-weight:600;color:var(--text-1);flex:1}
+.demo-step-status{font-size:11px;color:var(--text-3);font-family:var(--font-mono)}
+.demo-step-status.running{color:#F5A623}
+.demo-step-status.done{color:#22c55e}
+.demo-brief-box{font-size:13px;color:var(--text-2);line-height:1.6;font-style:italic;padding:8px 12px;background:rgba(245,166,35,.05);border-left:2px solid #F5A623;border-radius:0 8px 8px 0}
+.demo-phase0-items,.demo-agents{display:flex;flex-direction:column;gap:4px}
+.demo-phase0-item{font-size:11px;color:var(--text-2);padding:3px 0;font-family:var(--font-mono);opacity:0;transform:translateX(-8px);transition:all .3s}
+.demo-phase0-item.show{opacity:1;transform:translateX(0)}
+.demo-agent{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--text-2);padding:4px 6px;border-radius:6px;font-family:var(--font-mono);opacity:0;transition:all .3s}
+.demo-agent.show{opacity:1}
+.demo-agent.running{background:rgba(245,166,35,.08);color:#F5A623}
+.demo-agent.done{color:#22c55e}
+.demo-agent-icon{font-size:12px;width:16px}
+.demo-progress-wrap{height:4px;background:rgba(255,255,255,.06);border-radius:99px;margin-top:10px;overflow:hidden}
+.demo-progress-bar{height:100%;width:0%;background:linear-gradient(90deg,#F5A623,#f97316);border-radius:99px;transition:width .4s ease}
+.demo-specs-stream{display:flex;flex-direction:column;gap:3px;max-height:160px;overflow-y:auto}
+.demo-spec-file{font-size:10px;font-family:var(--font-mono);padding:3px 8px;border-radius:4px;cursor:pointer;opacity:0;transform:translateX(-8px);transition:all .25s;display:flex;align-items:center;gap:6px;color:var(--text-2)}
+.demo-spec-file.show{opacity:1;transform:translateX(0)}
+.demo-spec-file:hover{background:rgba(245,166,35,.08);color:#F5A623}
+.demo-spec-file.selected{background:rgba(245,166,35,.12);color:#F5A623}
+.demo-spec-layer{font-size:9px;padding:1px 5px;border-radius:3px;font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+.layer-api{background:rgba(99,102,241,.2);color:#818cf8}
+.layer-data{background:rgba(20,184,166,.2);color:#2dd4bf}
+.layer-functional{background:rgba(245,166,35,.2);color:#F5A623}
+.layer-ui{background:rgba(236,72,153,.2);color:#f472b6}
+.layer-rules{background:rgba(239,68,68,.2);color:#f87171}
+.layer-quality{background:rgba(34,197,94,.2);color:#4ade80}
+.layer-meta{background:rgba(148,163,184,.2);color:#94a3b8}
+.demo-right{background:#0a0a0a;border:1px solid rgba(255,255,255,.08);border-radius:12px;overflow:hidden;position:sticky;top:80px}
+.demo-viewer-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.02)}
+.demo-copy-btn{font-size:10px;padding:4px 10px;background:#F5A623;color:#000;border:none;border-radius:6px;cursor:pointer;font-weight:600;transition:opacity .15s}
+.demo-copy-btn:hover{opacity:.85}
+.demo-viewer-code{padding:16px;font-family:var(--font-mono);font-size:11px;line-height:1.7;color:#ccc;overflow-x:auto;min-height:400px;max-height:520px;overflow-y:auto;margin:0;white-space:pre}
+.demo-run-btn{background:linear-gradient(135deg,#F5A623,#f97316);color:#000;border:none;border-radius:10px;padding:14px 32px;font-size:15px;font-weight:700;cursor:pointer;letter-spacing:-.01em;transition:transform .15s,opacity .15s}
+.demo-run-btn:hover{transform:scale(1.03)}
+.demo-run-btn:disabled{opacity:.5;cursor:not-allowed}
 </style>
 </head>
 <body>
@@ -577,6 +622,101 @@ footer{border-top:1px solid var(--border);padding:48px 0;position:relative;z-ind
         <span class="how-tag">Phase 3 — Code Generation (coming soon)</span>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- LIVE DEMO -->
+<section id="demo" style="padding:80px 0;">
+  <div class="container">
+
+    <div class="eyebrow"><span class="bar"></span>Live simulation</div>
+
+    <h2 style="font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;margin:16px 0 8px;letter-spacing:-.03em;">
+      Watch MAP Spec generate in real time.
+    </h2>
+    <p style="color:var(--text-2);font-size:1.1rem;margin-bottom:48px;max-width:500px;">
+      A real brief. Real agents. Real atomic specs.
+      Click run to watch the full pipeline.
+    </p>
+
+    <div class="demo-shell">
+
+      <!-- Left: Pipeline steps -->
+      <div class="demo-left">
+
+        <!-- Brief input -->
+        <div class="demo-step active" id="demo-step-brief">
+          <div class="demo-step-header">
+            <div class="demo-step-num">01</div>
+            <div class="demo-step-title">Product Brief</div>
+          </div>
+          <div class="demo-brief-box" id="demo-brief-text">
+            Build a task management app with team
+            collaboration, due dates, and priority levels.
+          </div>
+        </div>
+
+        <!-- Phase 0 -->
+        <div class="demo-step" id="demo-step-phase0">
+          <div class="demo-step-header">
+            <div class="demo-step-num">02</div>
+            <div class="demo-step-title">Phase 0 — Clarification</div>
+            <div class="demo-step-status" id="status-phase0">—</div>
+          </div>
+          <div class="demo-phase0-items" id="demo-phase0-items"></div>
+        </div>
+
+        <!-- Phase 1 -->
+        <div class="demo-step" id="demo-step-phase1">
+          <div class="demo-step-header">
+            <div class="demo-step-num">03</div>
+            <div class="demo-step-title">Phase 1 — AI Agents</div>
+            <div class="demo-step-status" id="status-phase1">—</div>
+          </div>
+          <div class="demo-agents" id="demo-agents"></div>
+          <div class="demo-progress-wrap" id="demo-progress-wrap" style="display:none">
+            <div class="demo-progress-bar" id="demo-progress-bar"></div>
+          </div>
+        </div>
+
+        <!-- Phase 2 -->
+        <div class="demo-step" id="demo-step-phase2">
+          <div class="demo-step-header">
+            <div class="demo-step-num">04</div>
+            <div class="demo-step-title">Phase 2 — Atomic Specs</div>
+            <div class="demo-step-status" id="status-phase2">—</div>
+          </div>
+          <div class="demo-specs-stream" id="demo-specs-stream"></div>
+        </div>
+
+      </div>
+
+      <!-- Right: Spec viewer -->
+      <div class="demo-right">
+        <div class="demo-viewer-header">
+          <span id="demo-viewer-filename" style="font-family:monospace;font-size:12px;color:var(--amber);">
+            — select a spec —
+          </span>
+          <button class="demo-copy-btn" id="demo-copy-btn" onclick="copyDemoSpec()" style="display:none">
+            Copy as AI Prompt
+          </button>
+        </div>
+        <pre class="demo-viewer-code" id="demo-viewer-code"><span style="color:#555"># Click any spec file on the left
+# to view its YAML content here</span></pre>
+      </div>
+
+    </div>
+
+    <!-- Run button -->
+    <div style="text-align:center;margin-top:32px;">
+      <button class="demo-run-btn" id="demo-run-btn" onclick="runPipelineDemo()">
+        ▶ Run the pipeline
+      </button>
+      <p style="font-size:12px;color:var(--text-3);margin-top:8px;">
+        Simulated · based on real platform output
+      </p>
+    </div>
+
   </div>
 </section>
 
@@ -996,6 +1136,350 @@ async function handleWaitlist(){
 }
 document.getElementById('emailInput').addEventListener('keypress',e=>{ if(e.key==='Enter') handleWaitlist(); });
 </script>
+
+<!-- ─── DEMO SCRIPT ───────────────────────────────────────────── -->
+<script>
+const DEMO_PHASE0_ITEMS = [
+  '✓ Clarification questions generated (8)',
+  '✓ Answers processed',
+  '✓ Mandate approved by platform owner',
+  '✓ 6 agents selected and confirmed',
+];
+
+const DEMO_AGENTS = [
+  { name: 'Business Analyst',   icon: '📋', time: 1800 },
+  { name: 'UX Researcher',      icon: '🔍', time: 1500 },
+  { name: 'UI Designer',        icon: '🎨', time: 1600 },
+  { name: 'Backend Architect',  icon: '⚙️', time: 2000 },
+  { name: 'Frontend Developer', icon: '💻', time: 1700 },
+  { name: 'API Tester',         icon: '🧪', time: 1400 },
+];
+
+const DEMO_SPECS = [
+  { id: 'meta.spec', layer: 'meta', label: 'meta.spec.yaml', yaml: `map-spec: "1.1.0"
+layer: "meta"
+unit:
+  id: "META-taskflow"
+project:
+  name: "TaskFlow"
+  type: "web-app"
+  version: "1.0.0"
+stack:
+  frontend: "Next.js 14"
+  backend: "Node.js + Express"
+  database: "PostgreSQL (Supabase)"
+  auth: "JWT + Supabase Auth"
+  styling: "Tailwind CSS"
+constraints:
+  - type: "compliance"
+    value: "12-Factor App"
+  - type: "data"
+    value: "No hard deletes — soft delete only"
+  - type: "security"
+    value: "All config from environment variables"` },
+
+  { id: 'FEAT-001', layer: 'functional', label: 'functional/FEAT-001-create-task.yaml', yaml: `map-spec: "1.1.0"
+layer: "functional"
+unit:
+  id: "FEAT-001-create-task"
+  name: "Create Task"
+  priority: "must-have"
+acceptanceCriteria:
+  - id: "AC-001-1"
+    given: "I am logged in as a team member"
+    when: "I click New Task and fill in title"
+    then: "Task is created and appears in My Tasks"
+    aiNote: "POST /api/v1/tasks, return 201 with taskId"
+  - id: "AC-001-2"
+    given: "I submit without a title"
+    when: "Form is validated"
+    then: "Inline error shown — title is required"
+    aiNote: "Client-side Zod validation before API call"` },
+
+  { id: 'API-001', layer: 'api', label: 'api/API-001-POST-tasks.yaml', yaml: `map-spec: "1.1.0"
+layer: "api"
+unit:
+  id: "API-001-POST-tasks"
+  name: "Create Task"
+endpoint:
+  method: "POST"
+  path: "/api/v1/tasks"
+  auth: "User"
+  rateLimit: "60 req/min per user"
+  requestBody:
+    title: "string (required, max 255)"
+    description: "string (optional)"
+    assigneeId: "uuid (optional)"
+    dueDate: "ISO timestamp (optional)"
+    priority: "low | medium | high | urgent"
+    teamId: "uuid (required)"
+responses:
+  201:
+    taskId: "uuid"
+    title: "string"
+    status: "todo"
+    createdAt: "ISO timestamp"
+  400:
+    error: "VALIDATION_ERROR"
+    fields: "object"
+  401:
+    error: "Unauthorized"` },
+
+  { id: 'TABLE-tasks', layer: 'data', label: 'data/TABLE-tasks.yaml', yaml: `map-spec: "1.1.0"
+layer: "data"
+unit:
+  id: "TABLE-tasks"
+  name: "Tasks Table"
+tables:
+  - name: "tasks"
+    purpose: "Core task entity with assignments and metadata"
+    columns:
+      - name: "id"
+        type: "UUID"
+        primary: true
+        default: "gen_random_uuid()"
+      - name: "title"
+        type: "VARCHAR(255)"
+        nullable: false
+      - name: "description"
+        type: "TEXT"
+        nullable: true
+      - name: "status"
+        type: "VARCHAR(20)"
+        default: "todo"
+        check: "IN ('todo','in_progress','review','done')"
+      - name: "priority"
+        type: "VARCHAR(10)"
+        default: "medium"
+      - name: "assignee_id"
+        type: "UUID"
+        references: "users.id"
+        nullable: true
+      - name: "due_date"
+        type: "TIMESTAMPTZ"
+        nullable: true
+      - name: "deleted_at"
+        type: "TIMESTAMPTZ"
+        nullable: true
+    indexes:
+      - columns: ["assignee_id"]
+      - columns: ["status", "deleted_at"]
+      - columns: ["due_date"]` },
+
+  { id: 'COMP-001', layer: 'ui', label: 'ui/COMP-001-TaskCard.yaml', yaml: `map-spec: "1.1.0"
+layer: "ui"
+unit:
+  id: "COMP-001-TaskCard"
+  name: "TaskCard Component"
+component:
+  name: "TaskCard"
+  type: "display"
+  route: "/dashboard"
+  props:
+    taskId: "string (required)"
+    title: "string (required)"
+    status: "todo | in_progress | review | done"
+    priority: "low | medium | high | urgent"
+    assignee: "{ id, name, avatarUrl } (optional)"
+    dueDate: "string ISO (optional)"
+    onStatusChange: "(status) => void"
+  state:
+    isMenuOpen: "boolean"
+    isEditing: "boolean"
+  interactions:
+    - trigger: "Click status badge"
+      action: "Open status dropdown"
+      outcome: "PATCH /api/v1/tasks/:id/status"
+    - trigger: "Click kebab menu"
+      action: "Show context menu"
+      options: ["Edit", "Assign", "Delete"]` },
+
+  { id: 'RULE-001', layer: 'rules', label: 'rules/RULE-001-soft-delete.yaml', yaml: `map-spec: "1.1.0"
+layer: "rules"
+unit:
+  id: "RULE-001-soft-delete"
+  name: "Soft Delete Enforcement"
+rules:
+  - id: "RULE-001"
+    rule: "Tasks must never be hard deleted"
+    severity: "critical"
+    domain: "data-integrity"
+    aiInstruction: >
+      Never generate DELETE FROM tasks SQL.
+      Always implement deletion as:
+      UPDATE tasks SET deleted_at = NOW()
+      WHERE id = $1 AND deleted_at IS NULL.
+      All SELECT queries must include
+      WHERE deleted_at IS NULL unless
+      explicitly fetching archived tasks.` },
+
+  { id: 'SUITE-001', layer: 'quality', label: 'quality/SUITE-001-api-integration.yaml', yaml: `map-spec: "1.1.0"
+layer: "quality"
+unit:
+  id: "SUITE-001-api-integration"
+  name: "API Integration Tests"
+testSuite:
+  name: "Tasks API Integration Tests"
+  type: "integration"
+  framework: "Vitest + Supertest"
+  coverage: 80
+  testCases:
+    - id: "TC-001"
+      name: "Create task successfully"
+      given: "Valid auth token and team membership"
+      when: "POST /api/v1/tasks with valid body"
+      then: "Returns 201 with taskId and status todo"
+      priority: "critical"
+    - id: "TC-002"
+      name: "Reject task without title"
+      given: "Valid auth token"
+      when: "POST /api/v1/tasks with empty title"
+      then: "Returns 400 VALIDATION_ERROR"
+      priority: "high"
+    - id: "TC-003"
+      name: "Soft delete — no hard delete"
+      given: "Existing task"
+      when: "DELETE /api/v1/tasks/:id"
+      then: "Sets deleted_at — task not in SELECT results"
+      priority: "critical"` },
+];
+
+let demoRunning = false;
+let selectedSpec = null;
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+function setStepActive(stepId) {
+  document.getElementById(stepId).classList.add('active');
+}
+
+function setStepDone(stepId) {
+  const el = document.getElementById(stepId);
+  el.classList.remove('active');
+  el.classList.add('done');
+}
+
+function setStatus(id, text, cls) {
+  const el = document.getElementById(id);
+  el.textContent = text;
+  el.className = 'demo-step-status ' + (cls || '');
+}
+
+function selectDemoSpec(specId) {
+  const spec = DEMO_SPECS.find(s => s.id === specId);
+  if (!spec) return;
+  document.querySelectorAll('.demo-spec-file').forEach(el => el.classList.remove('selected'));
+  const fileEl = document.getElementById('demo-file-' + specId);
+  if (fileEl) fileEl.classList.add('selected');
+  document.getElementById('demo-viewer-filename').textContent = spec.label;
+  document.getElementById('demo-viewer-code').textContent = spec.yaml;
+  document.getElementById('demo-copy-btn').style.display = 'block';
+  selectedSpec = spec;
+}
+
+function copyDemoSpec() {
+  if (!selectedSpec) return;
+  const prompt = `You are implementing a feature based on this MAP Spec file.\nFollow the specification exactly. Do not invent fields, endpoints,\ntables, or components not listed here.\n\n\`\`\`yaml\n${selectedSpec.yaml}\n\`\`\`\n\nImplement this spec completely and exactly as specified.`;
+  navigator.clipboard.writeText(prompt).then(() => {
+    const btn = document.getElementById('demo-copy-btn');
+    btn.textContent = '✓ Copied!';
+    setTimeout(() => btn.textContent = 'Copy as AI Prompt', 2000);
+  });
+}
+
+async function runPipelineDemo() {
+  if (demoRunning) return;
+  demoRunning = true;
+
+  const runBtn = document.getElementById('demo-run-btn');
+  runBtn.disabled = true;
+  runBtn.textContent = '⟳ Running...';
+
+  document.getElementById('demo-phase0-items').innerHTML = '';
+  document.getElementById('demo-agents').innerHTML = '';
+  document.getElementById('demo-specs-stream').innerHTML = '';
+  document.getElementById('demo-viewer-code').textContent = '# Specs will appear here as they generate...';
+  document.getElementById('demo-viewer-filename').textContent = '— generating —';
+  document.getElementById('demo-copy-btn').style.display = 'none';
+  document.querySelectorAll('.demo-step').forEach(el => el.classList.remove('active','done'));
+  document.getElementById('demo-step-brief').classList.add('active');
+  ['phase0','phase1','phase2'].forEach(p => setStatus('status-' + p, '—', ''));
+
+  await sleep(400);
+
+  // Phase 0
+  setStepActive('demo-step-phase0');
+  setStatus('status-phase0', 'running...', 'running');
+  await sleep(600);
+
+  const phase0Container = document.getElementById('demo-phase0-items');
+  for (const item of DEMO_PHASE0_ITEMS) {
+    const el = document.createElement('div');
+    el.className = 'demo-phase0-item';
+    el.textContent = item;
+    phase0Container.appendChild(el);
+    await sleep(100);
+    el.classList.add('show');
+    await sleep(500);
+  }
+  setStatus('status-phase0', '✓ done', 'done');
+  setStepDone('demo-step-phase0');
+  await sleep(400);
+
+  // Phase 1
+  setStepActive('demo-step-phase1');
+  setStatus('status-phase1', 'running...', 'running');
+  document.getElementById('demo-progress-wrap').style.display = 'block';
+
+  const agentsContainer = document.getElementById('demo-agents');
+  const progressBar = document.getElementById('demo-progress-bar');
+
+  for (let i = 0; i < DEMO_AGENTS.length; i++) {
+    const agent = DEMO_AGENTS[i];
+    const el = document.createElement('div');
+    el.className = 'demo-agent show running';
+    el.id = 'demo-agent-' + i;
+    el.innerHTML = `<span class="demo-agent-icon">⟳</span>${agent.name}`;
+    agentsContainer.appendChild(el);
+    progressBar.style.width = ((i / DEMO_AGENTS.length) * 100) + '%';
+    await sleep(agent.time);
+    el.className = 'demo-agent show done';
+    el.innerHTML = `<span class="demo-agent-icon">✓</span>${agent.name}`;
+  }
+  progressBar.style.width = '100%';
+  await sleep(300);
+  setStatus('status-phase1', '✓ done', 'done');
+  setStepDone('demo-step-phase1');
+  await sleep(400);
+
+  // Phase 2
+  setStepActive('demo-step-phase2');
+  setStatus('status-phase2', 'generating...', 'running');
+
+  const specsContainer = document.getElementById('demo-specs-stream');
+  for (let i = 0; i < DEMO_SPECS.length; i++) {
+    const spec = DEMO_SPECS[i];
+    const el = document.createElement('div');
+    el.className = 'demo-spec-file';
+    el.id = 'demo-file-' + spec.id;
+    el.onclick = () => selectDemoSpec(spec.id);
+    el.innerHTML = `<span class="demo-spec-layer layer-${spec.layer}">${spec.layer}</span><span>${spec.label}</span>`;
+    specsContainer.appendChild(el);
+    await sleep(100);
+    el.classList.add('show');
+    if (i === 0) selectDemoSpec(spec.id);
+    await sleep(400);
+  }
+
+  setStatus('status-phase2', '✓ 67 specs', 'done');
+  setStepDone('demo-step-phase2');
+
+  runBtn.disabled = false;
+  runBtn.textContent = '↺ Run again';
+  demoRunning = false;
+}
+</script>
+<!-- ─── END DEMO SCRIPT ────────────────────────────────────────── -->
 
 <!-- ─── CLAUSE WIDGET ─────────────────────────────────────────── -->
 <style>
