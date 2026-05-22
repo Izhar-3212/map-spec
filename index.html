@@ -999,97 +999,417 @@ document.getElementById('emailInput').addEventListener('keypress',e=>{ if(e.key=
 
 <!-- ─── CLAUSE WIDGET ─────────────────────────────────────────── -->
 <style>
-#clause-btn{
-  position:fixed;bottom:28px;right:28px;z-index:9000;
-  width:52px;height:52px;border-radius:50%;
-  background:var(--amber);border:none;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:0 4px 20px rgba(245,166,35,.35);
-  transition:transform .2s,box-shadow .2s;
+/* ── Clause Widget ───────────────────────── */
+.clause-widget {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  font-family: -apple-system, BlinkMacSystemFont,
+               'Segoe UI', sans-serif;
 }
-#clause-btn:hover{transform:scale(1.08);box-shadow:0 6px 28px rgba(245,166,35,.5)}
-#clause-btn svg{width:22px;height:22px;fill:#0A0A0A;transition:opacity .2s}
-#clause-btn .cls-x{display:none}
 
-#clause-panel{
-  position:fixed;bottom:92px;right:28px;z-index:9000;
-  width:360px;max-height:520px;
-  background:var(--surface);border:1px solid var(--border-2);
-  border-radius:var(--rl);display:flex;flex-direction:column;
-  box-shadow:0 20px 60px rgba(0,0,0,.6);
-  transform:scale(.95) translateY(8px);opacity:0;
-  transition:transform .2s,opacity .2s;pointer-events:none;
+.clause-bubble {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #F5A623, #f97316);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  position: relative;
+  box-shadow: 0 8px 32px rgba(245,166,35,0.45);
+  transition: transform 0.2s;
 }
-#clause-panel.open{transform:scale(1) translateY(0);opacity:1;pointer-events:all}
 
-#clause-header{
-  padding:14px 16px;border-bottom:1px solid var(--border);
-  display:flex;align-items:center;gap:10px;flex-shrink:0;
-}
-.cls-avatar{
-  width:30px;height:30px;border-radius:50%;
-  background:var(--amber);display:flex;align-items:center;
-  justify-content:center;font-family:var(--font-mono);
-  font-weight:700;font-size:12px;color:#0A0A0A;flex-shrink:0;
-}
-.cls-name{font-weight:600;font-size:14px;color:var(--text-1)}
-.cls-status{font-size:11px;color:var(--green);font-family:var(--font-mono)}
+.clause-bubble:hover { transform: scale(1.06); }
 
-#clause-messages{
-  flex:1;overflow-y:auto;padding:14px;
-  display:flex;flex-direction:column;gap:10px;
-  scrollbar-width:thin;scrollbar-color:var(--border) transparent;
+.clause-bubble::before {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #F5A623, #f97316);
+  opacity: 0.2;
+  animation: clause-pulse 2.5s infinite;
 }
-.cls-msg{max-width:88%;padding:9px 12px;border-radius:10px;font-size:13.5px;line-height:1.5;word-break:break-word}
-.cls-msg.agent{background:var(--surface-2);color:var(--text-1);align-self:flex-start;border-bottom-left-radius:3px}
-.cls-msg.user{background:var(--amber);color:#0A0A0A;align-self:flex-end;border-bottom-right-radius:3px;font-weight:500}
-.cls-msg.loading{color:var(--text-3);font-style:italic}
-.cls-msg code{font-family:var(--font-mono);font-size:12px;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:3px}
-.cls-msg strong{font-weight:600}
 
-#clause-input-row{
-  padding:10px 12px;border-top:1px solid var(--border);
-  display:flex;gap:8px;align-items:center;flex-shrink:0;
+.clause-bubble::after {
+  content: '';
+  position: absolute;
+  inset: -12px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #F5A623, #f97316);
+  opacity: 0.08;
+  animation: clause-pulse 2.5s 0.5s infinite;
 }
-#clause-input{
-  flex:1;background:var(--bg);border:1px solid var(--border-2);
-  border-radius:6px;padding:8px 10px;color:var(--text-1);
-  font-family:var(--font-body);font-size:13px;outline:none;
-  transition:border-color .2s;resize:none;
+
+@keyframes clause-pulse {
+  0% { transform: scale(1); opacity: 0.2; }
+  100% { transform: scale(1.6); opacity: 0; }
 }
-#clause-input:focus{border-color:var(--amber)}
-#clause-send{
-  width:34px;height:34px;border-radius:6px;background:var(--amber);
-  border:none;cursor:pointer;display:flex;align-items:center;
-  justify-content:center;flex-shrink:0;transition:background .2s;
+
+.clause-bubble-icon {
+  font-size: 26px;
+  position: relative;
+  z-index: 1;
+  color: #000;
+  line-height: 1;
 }
-#clause-send:hover{background:#FFB83D}
-#clause-send svg{width:15px;height:15px;fill:#0A0A0A}
-#clause-send:disabled{opacity:.4;cursor:default}
-.cls-sources{font-size:10.5px;color:var(--text-3);margin-top:4px;font-family:var(--font-mono)}
+
+.clause-online-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 14px;
+  height: 14px;
+  background: #22c55e;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  z-index: 2;
+  animation: clause-badge-pulse 2s infinite;
+}
+
+@keyframes clause-badge-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.clause-panel {
+  position: fixed;
+  bottom: 90px;
+  right: 24px;
+  width: 320px;
+  background: rgba(15, 10, 0, 0.85);
+  border-radius: 24px;
+  border: 1px solid rgba(245,166,35,0.2);
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6),
+              inset 0 1px 0 rgba(245,166,35,0.08);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  opacity: 0;
+  transform: translateY(16px) scale(0.97);
+  transition: opacity 0.2s, transform 0.2s;
+  pointer-events: none;
+}
+
+.clause-panel.open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: all;
+}
+
+.clause-header {
+  padding: 14px 16px;
+  background: rgba(245,166,35,0.08);
+  border-bottom: 1px solid rgba(245,166,35,0.1);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.clause-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #F5A623, #f97316);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 900;
+  color: #000;
+  flex-shrink: 0;
+  letter-spacing: -2px;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  box-shadow: 0 4px 12px rgba(245,166,35,0.35);
+}
+
+.clause-header-info { flex: 1; }
+
+.clause-header-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.02em;
+}
+
+.clause-header-status {
+  font-size: 10px;
+  color: rgba(255,255,255,0.45);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 2px;
+}
+
+.clause-status-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #22c55e;
+  animation: clause-badge-pulse 2s infinite;
+}
+
+.clause-close {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  border: none;
+  color: rgba(255,255,255,0.4);
+  cursor: pointer;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, color 0.15s;
+}
+
+.clause-close:hover {
+  background: rgba(255,255,255,0.12);
+  color: #fff;
+}
+
+.clause-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 280px;
+  scroll-behavior: smooth;
+}
+
+.clause-messages::-webkit-scrollbar { width: 3px; }
+.clause-messages::-webkit-scrollbar-track { background: transparent; }
+.clause-messages::-webkit-scrollbar-thumb {
+  background: rgba(245,166,35,0.2);
+  border-radius: 2px;
+}
+
+.clause-msg {
+  padding: 9px 12px;
+  border-radius: 14px;
+  font-size: 12px;
+  line-height: 1.5;
+  max-width: 88%;
+}
+
+.clause-msg.assistant {
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.85);
+  border-radius: 14px 14px 14px 3px;
+  border: 1px solid rgba(255,255,255,0.05);
+  align-self: flex-start;
+}
+
+.clause-msg.user {
+  background: linear-gradient(135deg, #F5A623, #f97316);
+  color: #000;
+  font-weight: 600;
+  border-radius: 14px 14px 3px 14px;
+  align-self: flex-end;
+}
+
+.clause-msg.typing {
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.35);
+  font-style: italic;
+  font-size: 11px;
+  border-radius: 14px 14px 14px 3px;
+  align-self: flex-start;
+}
+
+.clause-sources {
+  font-size: 9px;
+  color: rgba(245,166,35,0.45);
+  align-self: flex-start;
+  padding-left: 2px;
+}
+
+.clause-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  padding: 0 12px 10px;
+}
+
+.clause-suggestion {
+  background: rgba(245,166,35,0.07);
+  border: 1px solid rgba(245,166,35,0.18);
+  color: #F5A623;
+  border-radius: 20px;
+  padding: 4px 10px;
+  font-size: 10px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.clause-suggestion:hover {
+  background: rgba(245,166,35,0.15);
+}
+
+.clause-input-area {
+  display: flex;
+  gap: 8px;
+  padding: 10px 12px;
+  border-top: 1px solid rgba(245,166,35,0.08);
+  background: rgba(0,0,0,0.2);
+}
+
+.clause-input {
+  flex: 1;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(245,166,35,0.12);
+  border-radius: 10px;
+  padding: 8px 10px;
+  color: #fff;
+  font-size: 12px;
+  outline: none;
+  resize: none;
+  font-family: inherit;
+  line-height: 1.4;
+  max-height: 80px;
+  overflow-y: auto;
+  transition: border-color 0.15s;
+}
+
+.clause-input:focus {
+  border-color: rgba(245,166,35,0.35);
+}
+
+.clause-input::placeholder {
+  color: rgba(255,255,255,0.25);
+  font-style: italic;
+}
+
+.clause-send {
+  width: 34px;
+  height: 34px;
+  background: linear-gradient(135deg, #F5A623, #f97316);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  align-self: flex-end;
+  transition: opacity 0.15s, transform 0.15s;
+}
+
+.clause-send:hover { transform: scale(1.05); }
+.clause-send:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.clause-send svg {
+  width: 14px;
+  height: 14px;
+  fill: #000;
+}
+
+.clause-footer {
+  text-align: center;
+  font-size: 9px;
+  color: rgba(255,255,255,0.18);
+  padding: 6px;
+  background: rgba(0,0,0,0.15);
+}
+
+@media (max-width: 400px) {
+  .clause-panel {
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100vh;
+    border-radius: 0;
+  }
+}
 </style>
 
-<button id="clause-btn" onclick="toggleClause()" title="Ask Clause about MAP Spec">
-  <svg class="cls-chat" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
-  <svg class="cls-x" style="display:none" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-</button>
+<!-- Clause Chat Widget -->
+<div class="clause-widget">
 
-<div id="clause-panel">
-  <div id="clause-header">
-    <div class="cls-avatar">C</div>
-    <div>
-      <div class="cls-name">Clause</div>
-      <div class="cls-status">● MAP Spec support</div>
+  <button class="clause-bubble"
+          onclick="toggleClause()"
+          title="Ask Clause about MAP Spec"
+          aria-label="Open Clause chat">
+    <span class="clause-bubble-icon">✦</span>
+    <div class="clause-online-badge"></div>
+  </button>
+
+  <div class="clause-panel" id="clause-panel"
+       role="dialog" aria-label="Clause - MAP Spec support">
+
+    <div class="clause-header">
+      <div class="clause-avatar">C/</div>
+      <div class="clause-header-info">
+        <div class="clause-header-name">Clause</div>
+        <div class="clause-header-status">
+          <div class="clause-status-dot"></div>
+          Online · MAP Spec AI
+        </div>
+      </div>
+      <button class="clause-close"
+              onclick="toggleClause()"
+              aria-label="Close">✕</button>
     </div>
-  </div>
-  <div id="clause-messages">
-    <div class="cls-msg agent">Hi! I'm <strong>Clause</strong> — ask me anything about MAP Spec, AI drift, or how MyAgenticPlatform works.</div>
-  </div>
-  <div id="clause-input-row">
-    <input id="clause-input" type="text" placeholder="Ask about MAP Spec…" maxlength="500" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendClause()}">
-    <button id="clause-send" onclick="sendClause()">
-      <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
-    </button>
+
+    <div class="clause-messages" id="clause-messages">
+      <div class="clause-msg assistant">
+        Hi! I'm <strong>Clause</strong> — your MAP Spec guide ✨<br><br>
+        Ask me anything about MAP Spec, AI drift,
+        or how the platform works.
+      </div>
+    </div>
+
+    <div class="clause-suggestions" id="clause-suggestions">
+      <button class="clause-suggestion"
+              onclick="askClause('What is MAP Spec?')">
+        What is MAP Spec?
+      </button>
+      <button class="clause-suggestion"
+              onclick="askClause('What is AI drift?')">
+        AI drift
+      </button>
+      <button class="clause-suggestion"
+              onclick="askClause('How does MAP Spec Discover work?')">
+        MAP Spec Discover
+      </button>
+      <button class="clause-suggestion"
+              onclick="askClause('How do I get started?')">
+        Getting started
+      </button>
+    </div>
+
+    <div class="clause-input-area">
+      <textarea
+        class="clause-input"
+        id="clause-input"
+        placeholder="Ask Clause anything..."
+        rows="1"
+        onkeydown="handleClauseKey(event)"
+        oninput="autoResizeClauseInput(this)"
+      ></textarea>
+      <button class="clause-send"
+              id="clause-send"
+              onclick="sendClauseMessage()"
+              aria-label="Send">
+        <svg viewBox="0 0 24 24">
+          <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="clause-footer">
+      Powered by MAP Spec · contact@mapspec.io
+    </div>
   </div>
 </div>
 
@@ -1103,26 +1423,28 @@ document.getElementById('emailInput').addEventListener('keypress',e=>{ if(e.key=
   window.toggleClause = function() {
     open = !open;
     document.getElementById('clause-panel').classList.toggle('open', open);
-    document.querySelector('#clause-btn .cls-chat').style.display = open ? 'none' : 'block';
-    document.querySelector('#clause-btn .cls-x').style.display = open ? 'block' : 'none';
     if (open) setTimeout(() => document.getElementById('clause-input').focus(), 200);
   };
 
-  window.sendClause = async function() {
+  window.sendClauseMessage = async function() {
     const input = document.getElementById('clause-input');
     const send = document.getElementById('clause-send');
     const msg = input.value.trim();
     if (!msg) return;
 
-    addMsg(msg, 'user');
+    appendClauseMessage(msg, 'user');
     input.value = '';
+    autoResizeClauseInput(input);
     send.disabled = true;
 
-    const loading = addMsg('Thinking…', 'agent loading');
+    const suggestions = document.getElementById('clause-suggestions');
+    if (suggestions) suggestions.style.display = 'none';
+
+    const typing = appendClauseMessage('Thinking…', 'typing');
 
     const coldStartTimer = setTimeout(() => {
-      if (loading.parentNode) {
-        loading.innerHTML = 'Waking Clause up… (first message takes ~30s) ☕';
+      if (typing.parentNode) {
+        typing.innerHTML = 'Waking Clause up… (first message takes ~30s) ☕';
       }
     }, 3000);
 
@@ -1139,10 +1461,10 @@ document.getElementById('emailInput').addEventListener('keypress',e=>{ if(e.key=
       clearTimeout(coldStartTimer);
       clearTimeout(timeoutId);
       const data = await res.json();
-      loading.remove();
+      removeClauseMessage(typing);
 
       const reply = data.response || data.error || 'Something went wrong.';
-      addMsg(reply, 'agent', data.sourcesUsed);
+      appendClauseMessage(reply, 'assistant', data.sourcesUsed);
       history.push({ role: 'user', content: msg });
       history.push({ role: 'assistant', content: reply });
       if (history.length > 20) history = history.slice(-20);
@@ -1150,29 +1472,51 @@ document.getElementById('emailInput').addEventListener('keypress',e=>{ if(e.key=
       clearTimeout(coldStartTimer);
       clearTimeout(timeoutId);
       const aborted = err instanceof Error && err.name === 'AbortError';
-      loading.textContent = aborted
+      typing.textContent = aborted
         ? 'Clause took too long to respond. Try again — it may still be waking up.'
         : 'Could not reach Clause. Check mapspec.io for status.';
-      loading.classList.remove('loading');
+      typing.classList.remove('typing');
+      typing.classList.add('assistant');
     }
     send.disabled = false;
     input.focus();
   };
 
-  function addMsg(text, cls, sources) {
+  window.askClause = function(question) {
+    document.getElementById('clause-input').value = question;
+    sendClauseMessage();
+  };
+
+  window.handleClauseKey = function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendClauseMessage();
+    }
+  };
+
+  window.autoResizeClauseInput = function(el) {
+    el.style.height = 'auto';
+    el.style.height = Math.min(el.scrollHeight, 80) + 'px';
+  };
+
+  function appendClauseMessage(text, cls, sources) {
     const msgs = document.getElementById('clause-messages');
     const el = document.createElement('div');
-    el.className = 'cls-msg ' + cls;
+    el.className = 'clause-msg ' + cls;
     el.innerHTML = renderMarkdown(text);
     if (sources && sources.length) {
       const s = document.createElement('div');
-      s.className = 'cls-sources';
+      s.className = 'clause-sources';
       s.textContent = '📄 ' + sources.join(', ');
       el.appendChild(s);
     }
     msgs.appendChild(el);
     msgs.scrollTop = msgs.scrollHeight;
     return el;
+  }
+
+  function removeClauseMessage(el) {
+    if (el && el.parentNode) el.parentNode.removeChild(el);
   }
 
   function renderMarkdown(text) {
