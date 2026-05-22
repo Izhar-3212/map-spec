@@ -1452,12 +1452,12 @@ document.getElementById('emailInput').addEventListener('keypress',e=>{ if(e.key=
       const typingEl = document.getElementById(typingId);
       if (typingEl) {
         typingEl.innerHTML =
-          '☕ Waking up... first message takes ~30s on free hosting. Hang tight!';
+          '☕ Starting up... this may take a moment. Hang tight!';
       }
     }, 4000);
 
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 60000);
+    const timeoutId = setTimeout(() => controller.abort(), 90000);
 
     try {
       const res = await fetch(CLAUSE_API + '/chat', {
@@ -1482,7 +1482,7 @@ document.getElementById('emailInput').addEventListener('keypress',e=>{ if(e.key=
       const aborted = err instanceof Error && err.name === 'AbortError';
       typing.textContent = aborted
         ? 'Clause took too long to respond. The free tier may need a moment — try again in 30s.'
-        : 'Could not reach Clause. Check your connection or try again shortly.';
+        : 'Still warming up ☕ — please try again in a few seconds!';
       typing.classList.remove('typing');
       typing.classList.add('assistant');
     }
