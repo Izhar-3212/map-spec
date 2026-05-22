@@ -68,9 +68,8 @@ An AI receiving only this file knows exactly what to implement and exactly what 
 
 | Version | Status | Description |
 |---------|--------|-------------|
-| v1.0.0 | Stable | Monolithic specs — one file per layer |
-| v1.1.0 | Stable | Atomic Specs — one file per concern |
-| v1.2.0 | Planned | Baseline Spec Library |
+| v1.0.0 | Stable | First stable release |
+| v1.1.0 | Current | Atomic spec format, aiInstruction mandatory |
 
 ---
 
@@ -163,9 +162,30 @@ map-spec/
 
 ## Documentation
 
-- [The MAP Spec v1.0.0 Standard](docs/STANDARD.md) — complete layer definitions, field reference, validation rules
-- [Atomic Specs v1.1.0](docs/ATOMIC.md) — atomic spec principle, decomposition rules, file schema
-- [Contributing Guide](docs/CONTRIBUTING.md) — how to propose changes and submit examples
+Full documentation is available in the docs/ folder:
+
+- [What is MAP Spec?](docs/what-is-map-spec.md)
+- [Why Spec-Driven Development?](docs/why-spec-driven-development.md)
+- [AI Drift Explained](docs/ai-drift-explained.md)
+- [How It Works](docs/how-it-works.md)
+- [MAP Spec Layers](docs/map-spec-layers.md)
+- [MAP Spec Discover](docs/map-spec-discover.md)
+- [Getting Started](docs/getting-started.md)
+- [12-Factor Compliance](docs/twelve-factor-compliance.md)
+- [FAQ](docs/faq.md)
+- [Glossary](docs/glossary.md)
+- [Roadmap](docs/roadmap.md)
+
+## Examples
+
+See the examples/ folder for valid MAP Spec YAML files:
+- [Meta spec](examples/example-meta-spec.yaml)
+- [Functional spec](examples/example-functional-spec.yaml)
+- [API spec](examples/example-api-spec.yaml)
+- [Data spec](examples/example-data-spec.yaml)
+- [UI spec](examples/example-ui-spec.yaml)
+- [Rules spec](examples/example-rules-spec.yaml)
+- [Quality spec](examples/example-quality-spec.yaml)
 
 ---
 
