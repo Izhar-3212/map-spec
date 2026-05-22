@@ -1095,7 +1095,7 @@ document.getElementById('emailInput').addEventListener('keypress',e=>{ if(e.key=
 
 <script>
 (function(){
-  const CLAUSE_API = 'http://localhost:3002/chat';
+  const CLAUSE_API = 'http://localhost:3002';
   let open = false;
   let history = [];
   let sessionId = 'session-' + Date.now();
@@ -1120,12 +1120,24 @@ document.getElementById('emailInput').addEventListener('keypress',e=>{ if(e.key=
 
     const loading = addMsg('Thinking…', 'agent loading');
 
+    const coldStartTimer = setTimeout(() => {
+      if (loading.parentNode) {
+        loading.innerHTML = 'Waking Clause up… (first message takes ~30s) ☕';
+      }
+    }, 3000);
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 45000);
+
     try {
-      const res = await fetch(CLAUSE_API, {
+      const res = await fetch(CLAUSE_API + '/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: msg, conversationHistory: history, sessionId })
+        body: JSON.stringify({ message: msg, conversationHistory: history, sessionId }),
+        signal: controller.signal,
       });
+      clearTimeout(coldStartTimer);
+      clearTimeout(timeoutId);
       const data = await res.json();
       loading.remove();
 
@@ -1134,8 +1146,13 @@ document.getElementById('emailInput').addEventListener('keypress',e=>{ if(e.key=
       history.push({ role: 'user', content: msg });
       history.push({ role: 'assistant', content: reply });
       if (history.length > 20) history = history.slice(-20);
-    } catch {
-      loading.textContent = 'Could not reach Clause. Is the agent running on port 3002?';
+    } catch(err) {
+      clearTimeout(coldStartTimer);
+      clearTimeout(timeoutId);
+      const aborted = err instanceof Error && err.name === 'AbortError';
+      loading.textContent = aborted
+        ? 'Clause took too long to respond. Try again — it may still be waking up.'
+        : 'Could not reach Clause. Check mapspec.io for status.';
       loading.classList.remove('loading');
     }
     send.disabled = false;
