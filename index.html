@@ -1481,7 +1481,7 @@ document.getElementById('emailInput').addEventListener('keypress',e=>{ if(e.key=
       clearTimeout(timeoutId);
       const aborted = err instanceof Error && err.name === 'AbortError';
       typing.textContent = aborted
-        ? 'Clause took too long to respond. The free tier may need a moment — try again in 30s.'
+        ? 'Still warming up ☕ — please try again in a few seconds!'
         : 'Still warming up ☕ — please try again in a few seconds!';
       typing.classList.remove('typing');
       typing.classList.add('assistant');
